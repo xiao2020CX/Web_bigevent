@@ -40,7 +40,7 @@ $(function(){
       username: $('#form_reg [name=username]').val(),
       password: $('#form_reg [name=password]').val()
     }
-    $.post('http://ajax.frontend.itheima.net/api/reguser', data, function(res) {
+    $.post('/api/reguser', data, function(res) {
       if (res.status !== 0) {
         return layer.msg(res.message)
       }
@@ -50,13 +50,14 @@ $(function(){
     })
   })
   // 监听登录表单的提交事件
-  $('#foem_login').submit(function(e){
+  $('#form_login').submit(function(e){
     // 阻止默认表单提交行为
     e.preventDefault()
     $.ajax({
-        url:'',
+        url:'/api/login',
         method:'POST',
-        data:$(this).serialize(),success:function(res){
+        data:$(this).serialize(),
+        success: function(res){
             if(res.status !==0){
                 return layer.msg('登陆失败')
             }
@@ -64,7 +65,7 @@ $(function(){
             // 将登录成功得到的 token 字符串，保存到 localStorage 中
             localStorage.setItem('token',res.token)
             // 跳转到后台主页
-            location.href='/index.html'
+            location.href='/index1.html'
         }
     })
   })
