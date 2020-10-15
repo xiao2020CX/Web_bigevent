@@ -13,7 +13,7 @@ $(function () {
     // 1.3 创建裁剪区域
     $image.cropper(options)
     // 为上传按钮绑定点击事件
-    $('btnChooseImage').on('click', function () {
+    $('#btnChooseImage').on('click', function () {
         $('#file').click()
     })
     // 为文件选择框绑定 change 事件
@@ -47,7 +47,7 @@ $(function () {
         //   2.调用接口，把头像上传到服务器  
         $.ajax({
             method: 'POST',
-            url: '/my/updata/avatar',
+            url: '/my/update/avatar',
             data: {
                 avatar: dataURL
             },
