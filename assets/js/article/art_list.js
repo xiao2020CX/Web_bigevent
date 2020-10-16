@@ -43,6 +43,9 @@ $(function () {
                 // 使用模板引擎渲染页面的数据
                 var htmlStr = template('tpl-table', res)
                 $('tbody').html(htmlStr)
+                // 调用渲染分页的方法
+                renderPage(res.total)
+
             }
         })
     }
@@ -60,6 +63,7 @@ $(function () {
                 $('[name=cate_id]').html(htmlStr)
                 // 通过layui来重新渲染 表单区域的UI结构
                 form.render()
+
             }
         })
     }
@@ -74,4 +78,52 @@ $(function () {
         initTable()
 
     })
+    // 定义渲染分页的方法
+    function renderPage(total) {
+        // console.log(total);
+        // 调用laypage()
+        //执行一个laypage实例
+        laypage.render({
+            elem: 'pageBox' //注意，这里的 test1 是 ID，不用加 # 号
+            , count: total, //数据总数，从服务端得到
+            limit: q.pagesize,
+            curr: q.pagenum,
+            layout: ['count', 'limit', 'prev', 'page', 'next', 'skip'],
+            limits: [2, 3, 5, 10],
+            jump: function (obj, first) {
+                q.pagenum = obj.curr
+                q.pagesize = obj.limit
+                if (first) return
+                initTable()
+            }
+        });
+    }
+
+    // 通过代理的形式 ，为删除按钮绑定点击事件处理函数
+    $('tbody').on('click', '.btn-delete', function () {
+        var len = $('.btn-delete').length
+        // console.log(len);
+        // 获取文章的id
+        var id = $(this).attr('data-id')
+        // 询问用户是否要删除数据
+        layer.confirm('确认删除?', { icon: 3, title: '提示' }, function (index) {
+            $.ajax({
+                method: 'GET',
+                url: '/my/article/delete/' + id,
+                success: function (res) {
+                    if (res.status !== 0) {
+                        return layer.msg('删除文章失败！')
+                    }
+                    layer.msg('删除文章成功！')
+                    if (len === 1) {
+                        q.pagenum = q.pagenum === 1 ? 1 : q.pagenum - 1
+                    }
+                    initTable()
+                }
+            })
+            layer.close(index);
+        });
+
+    })
+
 })
